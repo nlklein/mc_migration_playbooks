@@ -4,7 +4,7 @@
     "category": "Uncategorized",
     "coa": {
         "data": {
-            "description": "",
+            "description": "The purpose of this playbook is to add the SOAR container ID to the MC incident description and then add the MC ID to the SOAR container as an artifact.",
             "edges": [
                 {
                     "id": "port_0_to_port_2",
@@ -42,7 +42,7 @@
                     "targetPort": "5_in"
                 }
             ],
-            "hash": "1f1e8ac9e2a55adffd9d5a336da7f9b952157163",
+            "hash": "98c12c066c446e252c42ac7571d0d89315f1328f",
             "nodes": {
                 "0": {
                     "data": {
@@ -58,7 +58,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 1000,
-                    "y": 419.9999999999999
+                    "y": 419.9999999999998
                 },
                 "1": {
                     "data": {
@@ -74,7 +74,7 @@
                     "type": "end",
                     "warnings": {},
                     "x": 1000,
-                    "y": 940
+                    "y": 1000
                 },
                 "2": {
                     "data": {
@@ -83,7 +83,9 @@
                         "advanced": {
                             "customName": "Get Description",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Get current incident description.",
+                            "join": [],
+                            "note": "Get current incident description."
                         },
                         "connector": "Mission Control",
                         "connectorConfigs": [
@@ -117,7 +119,9 @@
                         "advanced": {
                             "customName": "Add Container ID to Description",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Append SOAR container ID to the bottom of the description.",
+                            "join": [],
+                            "note": "Append SOAR container ID to the bottom of the description."
                         },
                         "functionId": 1,
                         "functionName": "add_container_id_to_description",
@@ -134,7 +138,7 @@
                     "type": "format",
                     "warnings": {},
                     "x": 980,
-                    "y": 660
+                    "y": 680
                 },
                 "4": {
                     "data": {
@@ -143,7 +147,9 @@
                         "advanced": {
                             "customName": "Update Incident Description",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Update incident description in MC.",
+                            "join": [],
+                            "note": "Update incident description in MC."
                         },
                         "connector": "Mission Control",
                         "connectorConfigs": [
@@ -171,14 +177,16 @@
                     "type": "missionControl",
                     "warnings": {},
                     "x": 980,
-                    "y": 800
+                    "y": 840
                 },
                 "5": {
                     "data": {
                         "advanced": {
                             "customName": "Save MC ID to Container",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Save MC incident ID to SOAR container as artifact.",
+                            "join": [],
+                            "note": "Save MC incident ID to SOAR container as artifact."
                         },
                         "customFunction": {
                             "draftMode": false,
@@ -338,7 +346,7 @@
         "schema": "5.0.9",
         "version": "6.0.0.114895"
     },
-    "create_time": "2023-05-22T22:28:57.650024+00:00",
+    "create_time": "2023-05-23T13:11:41.951212+00:00",
     "draft_mode": false,
     "labels": [
         "*"
