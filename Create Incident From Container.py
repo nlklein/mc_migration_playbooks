@@ -1,5 +1,5 @@
 """
-
+The purpose of this playbook is to ingest on poll SOAR containers into MC as incidents. The SOAR container artifacts are then saved to the MC incident as events.
 """
 
 
@@ -29,6 +29,10 @@ def create_incident(action=None, success=None, container=None, results=None, han
         parameters=[
             "container:name"
         ])
+
+    ################################################################################
+    # Create Mission Control incident for the new on poll container.
+    ################################################################################
 
     name_value = container.get("name", None)
 
@@ -61,6 +65,10 @@ def create_incident(action=None, success=None, container=None, results=None, han
 @phantom.playbook_block()
 def save_mc_id_as_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("save_mc_id_as_artifact() called")
+
+    ################################################################################
+    # Save the new MC incident ID to the container as an artifact.
+    ################################################################################
 
     id_value = container.get("id", None)
     create_incident_result_data = phantom.collect2(container=container, datapath=["create_incident:action_result.data.*.id","create_incident:action_result.parameter.context.artifact_id","create_incident:action_result.parameter.context.artifact_external_id"], action_results=results)
@@ -102,6 +110,11 @@ def close_container(action=None, success=None, container=None, results=None, han
     phantom.debug("close_container() called")
 
     ################################################################################
+    # Close current container. A new container will automatically be created and linked 
+    # to the new MC incident.
+    ################################################################################
+
+    ################################################################################
     ## Custom Code Start
     ################################################################################
 
@@ -123,6 +136,10 @@ def add_comment(action=None, success=None, container=None, results=None, handle=
     phantom.debug("add_comment() called")
 
     ################################################################################
+    # On-poll container successfully moved to Mission Control. Closing container.
+    ################################################################################
+
+    ################################################################################
     ## Custom Code Start
     ################################################################################
 
@@ -142,6 +159,11 @@ def add_comment(action=None, success=None, container=None, results=None, handle=
 @phantom.playbook_block()
 def iterate_all_artifacts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("iterate_all_artifacts() called")
+
+    ################################################################################
+    # Iterate all artifacts in the current container and create JSON body for the 
+    # POST request.
+    ################################################################################
 
     container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef"])
     create_incident_result_data = phantom.collect2(container=container, datapath=["create_incident:action_result.data.*.id"], action_results=results)
@@ -199,6 +221,10 @@ def iterate_all_artifacts(action=None, success=None, container=None, results=Non
 def iterate_http_body(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("iterate_http_body() called")
 
+    ################################################################################
+    # Iterate all JSON requests.
+    ################################################################################
+
     template = """%%\n{0}\n%%"""
 
     # parameter list for template variable replacement
@@ -235,6 +261,10 @@ def create_mc_event(action=None, success=None, container=None, results=None, han
         parameters=[
             "create_incident:action_result.data.*.id"
         ])
+
+    ################################################################################
+    # Create MC events for each artifact.
+    ################################################################################
 
     create_incident_result_data = phantom.collect2(container=container, datapath=["create_incident:action_result.data.*.id","create_incident:action_result.parameter.context.artifact_id","create_incident:action_result.parameter.context.artifact_external_id"], action_results=results)
     iterate_http_body__as_list = phantom.get_format_data(name="iterate_http_body__as_list")

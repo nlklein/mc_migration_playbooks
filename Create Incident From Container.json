@@ -4,7 +4,7 @@
     "category": "Uncategorized",
     "coa": {
         "data": {
-            "description": "",
+            "description": "The purpose of this playbook is to ingest on poll SOAR containers into MC as incidents. The SOAR container artifacts are then saved to the MC incident as events.",
             "edges": [
                 {
                     "id": "port_11_to_port_10",
@@ -63,7 +63,7 @@
                     "targetPort": "11_in"
                 }
             ],
-            "hash": "948177d855a058ff89a6e173b2bde3dfe82dad87",
+            "hash": "547ffbc97f2d8b9177ea11c52b5d271715efd002",
             "nodes": {
                 "0": {
                     "data": {
@@ -79,7 +79,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 1000,
-                    "y": 279.99999999999943
+                    "y": 279.9999999999993
                 },
                 "1": {
                     "data": {
@@ -95,14 +95,16 @@
                     "type": "end",
                     "warnings": {},
                     "x": 1000,
-                    "y": 1240
+                    "y": 1380
                 },
                 "10": {
                     "data": {
                         "advanced": {
                             "customName": "Close Container",
                             "customNameId": 0,
+                            "description": "Close current container. A new container will automatically be created and linked to the new MC incident.",
                             "join": [],
+                            "note": "Close current container. A new container will automatically be created and linked to the new MC incident.",
                             "refreshNotableData": true
                         },
                         "functionId": 2,
@@ -156,14 +158,16 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 980,
-                    "y": 1120
+                    "y": 1240
                 },
                 "11": {
                     "data": {
                         "advanced": {
                             "customName": "Add Comment",
                             "customNameId": 0,
-                            "join": []
+                            "description": "On-poll container successfully moved to Mission Control. Closing container.",
+                            "join": [],
+                            "note": "On-poll container successfully moved to Mission Control. Closing container."
                         },
                         "functionId": 3,
                         "functionName": "add_comment",
@@ -220,14 +224,16 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 980,
-                    "y": 1000
+                    "y": 1100
                 },
                 "12": {
                     "data": {
                         "advanced": {
                             "customName": "Iterate All Artifacts",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Iterate all artifacts in the current container and create JSON body for the POST request.",
+                            "join": [],
+                            "note": "Iterate all artifacts in the current container and create JSON body for the POST request."
                         },
                         "functionId": 1,
                         "functionName": "iterate_all_artifacts",
@@ -247,14 +253,16 @@
                     "userCode": "\n    # Write your custom code here...\n    \n    # DECLARE EVENT LIST\n    iterate_all_artifacts__http_body = []\n    \n    # ITERATE ARTIFACTS IN CONTAINER\n    for artifact in container_artifact_data:\n        \n        # SAVE DICTIONARY TO REFERNCE IN FOR LOOP\n        dictionary = artifact[0]\n\n        # ITERATE CEF FIELDS\n        for field in artifact[0]:\n            \n            # RETRIEVE CEF VALUE\n            field_value = None\n            field_value = dictionary[field]\n            \n            # IF VALUE PRESENT, CONTINUE \n            if field_value:\n                phantom.error(field)\n                phantom.error(field_value)\n                \n                field_json = '{\"' + str(field) + '\":\"' + str(field_value) + '\"}'\n                iterate_all_artifacts__http_body.append(field_json)\n                \n            \n\n\n",
                     "warnings": {},
                     "x": 980,
-                    "y": 640
+                    "y": 680
                 },
                 "13": {
                     "data": {
                         "advanced": {
                             "customName": "Iterate HTTP Body",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Iterate all JSON requests.",
+                            "join": [],
+                            "note": "Iterate all JSON requests."
                         },
                         "functionId": 1,
                         "functionName": "iterate_http_body",
@@ -270,7 +278,7 @@
                     "type": "format",
                     "warnings": {},
                     "x": 980,
-                    "y": 760
+                    "y": 820
                 },
                 "14": {
                     "data": {
@@ -279,7 +287,9 @@
                         "advanced": {
                             "customName": "Create MC Event",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Create MC events for each artifact.",
+                            "join": [],
+                            "note": "Create MC events for each artifact."
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
@@ -313,7 +323,7 @@
                     "type": "action",
                     "warnings": {},
                     "x": 980,
-                    "y": 880
+                    "y": 960
                 },
                 "2": {
                     "data": {
@@ -322,7 +332,9 @@
                         "advanced": {
                             "customName": "Create Incident",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Create Mission Control incident for the new on poll container.",
+                            "join": [],
+                            "note": "Create Mission Control incident for the new on poll container."
                         },
                         "connector": "Mission Control",
                         "connectorConfigs": [
@@ -372,7 +384,9 @@
                         "advanced": {
                             "customName": "Save MC ID as Artifact",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Save the new MC incident ID to the container as an artifact.",
+                            "join": [],
+                            "note": "Save the new MC incident ID to the container as an artifact."
                         },
                         "customFunction": {
                             "draftMode": false,
@@ -520,10 +534,10 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 980,
-                    "y": 520
+                    "y": 540
                 }
             },
-            "notes": ""
+            "notes": "Prerequisites:\n-Provision an HTTP asset to create POST requests to Mission Control.\n-Create a new incident type in Mission Control for these incidents. In this example, we use \"soar_poll\"."
         },
         "input_spec": null,
         "output_spec": null,
@@ -532,7 +546,7 @@
         "schema": "5.0.9",
         "version": "6.0.0.114895"
     },
-    "create_time": "2023-05-22T22:26:49.386961+00:00",
+    "create_time": "2023-05-23T02:14:41.339582+00:00",
     "draft_mode": false,
     "labels": [
         "*"
