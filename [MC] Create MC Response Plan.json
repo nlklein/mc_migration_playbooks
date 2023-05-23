@@ -4,7 +4,7 @@
     "category": "Uncategorized",
     "coa": {
         "data": {
-            "description": "",
+            "description": "The purpose of this playbook is to transfer custom SOAR workbooks over to MC as response plans.",
             "edges": [
                 {
                     "id": "port_7_to_port_8",
@@ -121,7 +121,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "b7d4933449acc21d3374112cadbfd5e2665a78f4",
+            "hash": "d5e32c56b87f8ab8d0708df550c60bc383c4f196",
             "nodes": {
                 "0": {
                     "data": {
@@ -153,14 +153,16 @@
                     "type": "end",
                     "warnings": {},
                     "x": 1000,
-                    "y": 1600
+                    "y": 1660
                 },
                 "10": {
                     "data": {
                         "advanced": {
                             "customName": "Decision 2",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Check to see if request is successful.",
+                            "join": [],
+                            "note": "Check to see if request is successful."
                         },
                         "conditions": [
                             {
@@ -204,16 +206,16 @@
                     "type": "decision",
                     "warnings": {},
                     "x": 1060,
-                    "y": 880
+                    "y": 920
                 },
                 "13": {
                     "data": {
                         "advanced": {
                             "customName": "Parse Workbook Phases",
                             "customNameId": 0,
-                            "description": "Does not currently parse out SLAs, playbooks, or actions.",
+                            "description": "Parse out phase name, description, and if a note is required. Does not currently parse out SLAs, playbooks, or actions. Sample request will be available in the repo with all available fields that can be added.",
                             "join": [],
-                            "note": "Does not currently parse out SLAs, playbooks, or actions."
+                            "note": "Parse out phase name, description, and if a note is required. Does not currently parse out SLAs, playbooks, or actions. Sample request will be available in the repo with all available fields that can be added."
                         },
                         "functionId": 3,
                         "functionName": "parse_workbook_phases",
@@ -234,14 +236,16 @@
                     "userCode": "\n    # Write your custom code here...\n    \n    # Create list to save each phase of a workbook\n    phases = []\n    \n    # Iterate each phase in the workbook\n    for phase in retrieve_workbook_phases_result_data[0][0][\"data\"]:\n                        \n        # Parse the workbook details\n        phase_name = phase[\"name\"]\n        phase_order = phase[\"order\"]\n        phase_tasks = phase[\"tasks\"]\n        \n        # Create list to save each task\n        tasks = []\n        \n        # Iterate each task in a phase\n        for task in phase_tasks:\n            \n            # Parse the task details\n            task_name = task[\"name\"]\n            task_order = task[\"order\"]\n            task_description = task[\"description\"]\n            task_is_note_required = task[\"is_note_required\"]\n            \n            # Remove double quotes and returns\n            task_description = task_description.replace('\"',\"'\")\n            task_description = task_description.replace('\\n', '')\n            task_description = task_description.replace('\\r', '')\n            \n            # Save to task list\n            tasks.append({\"name\":task_name,\"order\":task_order,\"description\":task_description,\"is_note_required\":task_is_note_required,\"owner\":\"\",\"suggestions\":{\"actions\":[],\"searches\":[]},\"start_time\":0,\"end_time\":0,\"total_time_taken\":0})\n        \n        # Save to phase list\n        phases.append({\"name\":phase_name,\"order\":phase_order,\"tasks\":tasks})\n    \n    # Create JSON body\n    parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"nklein\",\"update_by\":\"nklein\",\"name\":retrieve_workbook_details_result_item_0[0],\"description\":retrieve_workbook_details_result_item_1[0],\"template_status\":\"published\",\"phases\":phases}\n    \n    convert_json = json.dumps(parse_workbook_phases__json_body)\n    phantom.debug(convert_json)\n    \n    parse_workbook_phases__json_body = convert_json\n\n",
                     "warnings": {},
                     "x": 980,
-                    "y": 1100
+                    "y": 1140
                 },
                 "14": {
                     "data": {
                         "advanced": {
                             "customName": "Decision 3",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Check to see if request is successful.",
+                            "join": [],
+                            "note": "Check to see if request is successful."
                         },
                         "conditions": [
                             {
@@ -285,7 +289,7 @@
                     "type": "decision",
                     "warnings": {},
                     "x": 1060,
-                    "y": 1360
+                    "y": 1460
                 },
                 "15": {
                     "data": {
@@ -350,8 +354,8 @@
                     "id": "15",
                     "type": "utility",
                     "warnings": {},
-                    "x": 1340,
-                    "y": 1540
+                    "x": 1300,
+                    "y": 1600
                 },
                 "4": {
                     "data": {
@@ -360,7 +364,9 @@
                         "advanced": {
                             "customName": "Create Response Template",
                             "customNameId": 0,
-                            "join": []
+                            "description": "POST request to create MC response plan.",
+                            "join": [],
+                            "note": "POST request to create MC response plan."
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
@@ -388,18 +394,20 @@
                     "type": "action",
                     "warnings": {},
                     "x": 980,
-                    "y": 1240
+                    "y": 1300
                 },
                 "6": {
                     "data": {
                         "advanced": {
                             "customName": "Workbook Prompt",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Enter workbook ID to copy into MC.",
+                            "join": [],
+                            "note": "Enter workbook ID to copy into MC."
                         },
                         "approver": {
                             "type": "user",
-                            "value": "nklein"
+                            "value": "launching_user"
                         },
                         "functionId": 1,
                         "functionName": "workbook_prompt",
@@ -433,7 +441,9 @@
                         "advanced": {
                             "customName": "Retrieve Workbook Details",
                             "customNameId": 0,
-                            "join": []
+                            "description": "GET request to retrieve the workbook name and description.",
+                            "join": [],
+                            "note": "GET request to retrieve the workbook name and description."
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
@@ -466,14 +476,16 @@
                     "type": "action",
                     "warnings": {},
                     "x": 980,
-                    "y": 399.9999999999997
+                    "y": 399.99999999999966
                 },
                 "8": {
                     "data": {
                         "advanced": {
                             "customName": "Decision 1",
                             "customNameId": 0,
-                            "join": []
+                            "description": "Check to see if request is successful.",
+                            "join": [],
+                            "note": "Check to see if request is successful."
                         },
                         "conditions": [
                             {
@@ -494,6 +506,7 @@
                             {
                                 "comparisons": [
                                     {
+                                        "conditionIndex": 1,
                                         "op": "==",
                                         "param": "",
                                         "value": ""
@@ -516,7 +529,7 @@
                     "type": "decision",
                     "warnings": {},
                     "x": 1060,
-                    "y": 540
+                    "y": 560
                 },
                 "9": {
                     "data": {
@@ -525,7 +538,9 @@
                         "advanced": {
                             "customName": "Retrieve Workbook Phases",
                             "customNameId": 0,
-                            "join": []
+                            "description": "GET request to retrieve the workbook phases.",
+                            "join": [],
+                            "note": "GET request to retrieve the workbook phases."
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
@@ -558,10 +573,10 @@
                     "type": "action",
                     "warnings": {},
                     "x": 980,
-                    "y": 740
+                    "y": 760
                 }
             },
-            "notes": ""
+            "notes": "Prerequisites:\n-Provision an HTTP asset to create POST requests to Mission Control.\n-Provision an HTTP asset to perform GET request to SOAR."
         },
         "input_spec": null,
         "output_spec": null,
@@ -570,7 +585,7 @@
         "schema": "5.0.9",
         "version": "6.0.0.114895"
     },
-    "create_time": "2023-05-22T22:28:06.166971+00:00",
+    "create_time": "2023-05-23T02:28:17.161507+00:00",
     "draft_mode": false,
     "labels": [
         "*"

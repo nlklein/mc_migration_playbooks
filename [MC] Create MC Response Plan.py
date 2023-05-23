@@ -1,5 +1,5 @@
 """
-
+The purpose of this playbook is to transfer custom SOAR workbooks over to MC as response plans.
 """
 
 
@@ -22,6 +22,10 @@ def create_response_template(action=None, success=None, container=None, results=
     phantom.debug("create_response_template() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+
+    ################################################################################
+    # POST request to create MC response plan.
+    ################################################################################
 
     parse_workbook_phases__json_body = json.loads(_ if (_ := phantom.get_run_data(key="parse_workbook_phases:json_body")) != "" else "null")  # pylint: disable=used-before-assignment
 
@@ -51,9 +55,13 @@ def create_response_template(action=None, success=None, container=None, results=
 def workbook_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("workbook_prompt() called")
 
+    ################################################################################
+    # Enter workbook ID to copy into MC.
+    ################################################################################
+
     # set user and message variables for phantom.prompt call
 
-    user = "nklein"
+    user = phantom.collect2(container=container, datapath=["playbook:launching_user.name"])[0][0]
     role = None
     message = """Enter the ID of the workbook you want to copy to Mission Control."""
 
@@ -90,6 +98,10 @@ def retrieve_workbook_details(action=None, success=None, container=None, results
             "workbook_prompt:action_result.summary.responses.0"
         ])
 
+    ################################################################################
+    # GET request to retrieve the workbook name and description.
+    ################################################################################
+
     workbook_prompt_result_data = phantom.collect2(container=container, datapath=["workbook_prompt:action_result.summary.responses.0","workbook_prompt:action_result.parameter.context.artifact_id","workbook_prompt:action_result.parameter.context.artifact_external_id"], action_results=results)
 
     parameters = []
@@ -120,6 +132,10 @@ def retrieve_workbook_details(action=None, success=None, container=None, results
 @phantom.playbook_block()
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("decision_1() called")
+
+    ################################################################################
+    # Check to see if request is successful.
+    ################################################################################
 
     # check for 'if' condition 1
     found_match_1 = phantom.decision(
@@ -152,6 +168,10 @@ def retrieve_workbook_phases(action=None, success=None, container=None, results=
             "workbook_prompt:action_result.summary.responses.0"
         ])
 
+    ################################################################################
+    # GET request to retrieve the workbook phases.
+    ################################################################################
+
     workbook_prompt_result_data = phantom.collect2(container=container, datapath=["workbook_prompt:action_result.summary.responses.0","workbook_prompt:action_result.parameter.context.artifact_id","workbook_prompt:action_result.parameter.context.artifact_external_id"], action_results=results)
 
     parameters = []
@@ -183,6 +203,10 @@ def retrieve_workbook_phases(action=None, success=None, container=None, results=
 def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("decision_2() called")
 
+    ################################################################################
+    # Check to see if request is successful.
+    ################################################################################
+
     # check for 'if' condition 1
     found_match_1 = phantom.decision(
         container=container,
@@ -206,7 +230,9 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
     phantom.debug("parse_workbook_phases() called")
 
     ################################################################################
-    # Does not currently parse out SLAs, playbooks, or actions.
+    # Parse out phase name, description, and if a note is required. Does not currently 
+    # parse out SLAs, playbooks, or actions. Sample request will be available in the 
+    # repo with all available fields that can be added.
     ################################################################################
 
     retrieve_workbook_phases_result_data = phantom.collect2(container=container, datapath=["retrieve_workbook_phases:action_result.data.*.parsed_response_body"], action_results=results)
@@ -280,6 +306,10 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
 @phantom.playbook_block()
 def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("decision_3() called")
+
+    ################################################################################
+    # Check to see if request is successful.
+    ################################################################################
 
     # check for 'if' condition 1
     found_match_1 = phantom.decision(
