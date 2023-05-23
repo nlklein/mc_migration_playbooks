@@ -1,0 +1,240 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Uncategorized",
+    "coa": {
+        "data": {
+            "description": "The purpose of this playbook is to add the summary fields from an MC incident to a SOAR container as artifacts.",
+            "edges": [
+                {
+                    "id": "port_2_to_port_5",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "id": "port_7_to_port_1",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_5_to_port_9",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "id": "port_9_to_port_7",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                }
+            ],
+            "hash": "f8fa68cc748e32779f190856345be168ad1cc7db",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 419.99999999999955
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 1120
+                },
+                "2": {
+                    "data": {
+                        "action": "get incident",
+                        "actionType": "get",
+                        "advanced": {
+                            "customName": "Get Incident Details",
+                            "customNameId": 0,
+                            "description": "Retrieve MC incident details.",
+                            "join": [],
+                            "note": "Retrieve MC incident details."
+                        },
+                        "connector": "Mission Control",
+                        "connectorConfigs": [
+                            "builtin_mc_connector"
+                        ],
+                        "connectorId": 183,
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_incident_details",
+                        "id": "2",
+                        "parameters": {
+                            "id": "container:external_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "id"
+                            }
+                        ],
+                        "type": "missionControl"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "missionControl",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 540
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "Parse Incident Results",
+                            "customNameId": 0,
+                            "description": "Parse summary fields from incident details.",
+                            "join": [],
+                            "note": "Parse summary fields from incident details."
+                        },
+                        "functionId": 1,
+                        "functionName": "parse_incident_results",
+                        "id": "5",
+                        "inputParameters": [
+                            "get_incident_details:action_result.data.*.summary"
+                        ],
+                        "outputVariables": [
+                            "json_output"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n        \n    dictionary = get_incident_details_result_data[0][0]\n    \n    output_list = []\n\n    for field in get_incident_details_result_data[0][0]:\n        field_value = dictionary[field]\n        dictionary_format = '{\"' + field + '\":\"' + str(field_value) + '\"}'\n        output_list.append(dictionary_format)\n            \n    parse_incident_results__json_output = output_list\n    \n    phantom.error(parse_incident_results__json_output)\n\n",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 680
+                },
+                "7": {
+                    "data": {
+                        "action": "add artifact",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "Add Artifacts to Container",
+                            "customNameId": 0,
+                            "description": "Add summary fields to container as artifacts.",
+                            "join": [],
+                            "note": "Add summary fields to container as artifacts."
+                        },
+                        "connector": "Phantom",
+                        "connectorConfigs": [
+                            "soar_local"
+                        ],
+                        "connectorId": "deb82aa9-22cc-4675-9cf1-534b8d006eb7",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "add_artifacts_to_container",
+                        "id": "7",
+                        "parameters": {
+                            "cef_dictionary": "iterate_python_list:formatted_data.*",
+                            "cef_name": "",
+                            "cef_value": "",
+                            "container_id": "container:id",
+                            "label": "MC",
+                            "name": "MC Summary Field",
+                            "source_data_identifier": "container:source_data_identifier"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "User created artifact",
+                                "field": "name"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "event",
+                                "field": "label"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "source_data_identifier"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 960
+                },
+                "9": {
+                    "data": {
+                        "advanced": {
+                            "customName": "Iterate Python List",
+                            "customNameId": 0,
+                            "description": "Iterate the summary fields.",
+                            "join": [],
+                            "note": "Iterate the summary fields."
+                        },
+                        "functionId": 2,
+                        "functionName": "iterate_python_list",
+                        "id": "9",
+                        "parameters": [
+                            "parse_incident_results:custom_function:json_output"
+                        ],
+                        "template": "%%\n{0}\n%%",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 820
+                }
+            },
+            "notes": "Prerequisites:\n-Provision the Phantom asset."
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.9",
+        "version": "6.0.0.114895"
+    },
+    "create_time": "2023-05-23T02:45:26.032317+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
