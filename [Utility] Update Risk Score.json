@@ -1,0 +1,370 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Uncategorized",
+    "coa": {
+        "data": {
+            "description": "",
+            "edges": [
+                {
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_3_to_port_1",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_4_to_port_5",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "id": "port_5_to_port_8",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "id": "port_8_to_port_7",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_7_to_port_2",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_0_to_port_9",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_9_to_port_4",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                }
+            ],
+            "hash": "1a0ba1d6003be336bab4622ca7d974c2b963cd46",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 19.999999999999986,
+                    "y": -1.2789769243681803e-13
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 19.999999999999986,
+                    "y": 1280
+                },
+                "2": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format_risk_score_spl",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customDatapaths": {
+                            "artifacts": {
+                                "artifact:*.cef.risk_score": {
+                                    "contains": [],
+                                    "isCustomDatapath": true,
+                                    "label": "artifact:*.cef.risk_score",
+                                    "value": "artifact:*.cef.risk_score"
+                                }
+                            }
+                        },
+                        "functionId": 1,
+                        "functionName": "format_risk_score_spl",
+                        "id": "2",
+                        "parameters": [
+                            "map_vt_score_with_rba_score:custom_function:rba_score"
+                        ],
+                        "template": "| makeresults | eval dest=\"example.splunkcloud.com\"\n| sendalert risk param._risk_object=dest param._risk_object_type=\"system\" param._risk_score={0}",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 984
+                },
+                "3": {
+                    "data": {
+                        "action": "run query",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "update_risk_score",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk-external"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "update_risk_score",
+                        "id": "3",
+                        "parameters": {
+                            "command": "",
+                            "query": "format_risk_score_spl:formatted_data",
+                            "search_mode": "smart"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "query"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "search",
+                                "field": "command"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "smart",
+                                "field": "search_mode"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 1140
+                },
+                "4": {
+                    "data": {
+                        "action": "file reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "get_filehash_score_from_vt",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "VirusTotal v3",
+                        "connectorConfigs": [
+                            "hani_vt"
+                        ],
+                        "connectorId": "3fe4875d-a4a7-47d3-9ef1-f9e63a6653a4",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_filehash_score_from_vt",
+                        "id": "4",
+                        "parameters": {
+                            "hash": "artifact:*.cef.fileHash"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "hash"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "action",
+                    "warnings": {},
+                    "x": -1.4210854715202004e-14,
+                    "y": 327.99999999999983
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "map_vt_score_with_rba_score",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "map_vt_score_with_rba_score",
+                        "id": "5",
+                        "inputParameters": [
+                            "get_filehash_score_from_vt:action_result.data.*.attributes.reputation"
+                        ],
+                        "outputVariables": [
+                            "rba_score",
+                            "virus_total_score"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "code",
+                    "userCode": "    \n    phantom.debug(\"actual filehash reputation from VT: {}\".format(get_filehash_score_from_vt_result_item_0[0]))\n    \n    ############################################\n    ### Using a static Virus Total reputation score of -50 as an example instead of using get_filehash_score_from_vt_result_item_0\n    ### Will need to grab actual value from Virus Total Response    \n    ### you can uncomment the following line to search for the actual reputation score in the custom list\n    ### virus_total_repuation = get_filehash_score_from_vt_result_item_0[0]\n    ############################################\n        \n    ############################################\n    virus_total_reputation = \"-50\"\n    ############################################\n    \n    get_rba_score = \"\"\n    success, message, rba_score_list = phantom.get_list(list_name='virus_total_score_rba_mapping')\n    phantom.debug(\"success: {}, message: {}, rba_score_list: {}\".format(success, message, rba_score_list))\n    \n    if success==True and len(rba_score_list) > 0:\n        for virus_total_score, rba_score in rba_score_list:\n            phantom.debug(\"virus_total_score: {}, rba_score: {}\".format(str(virus_total_score), str(rba_score)))\n            if virus_total_reputation in str(virus_total_score):\n                get_rba_score = rba_score\n                break\n    \n    \n    map_vt_score_with_rba_score__virus_total_score = virus_total_reputation\n    map_vt_score_with_rba_score__rba_score = get_rba_score\n    \n    phantom.debug(\"filehash VT reputation score: {}\".format(map_vt_score_with_rba_score__virus_total_score))\n    phantom.debug(\"matching RBA score: {}\".format(map_vt_score_with_rba_score__rba_score))\n        \n",
+                    "warnings": {},
+                    "x": -1.4210854715202004e-14,
+                    "y": 492
+                },
+                "7": {
+                    "data": {
+                        "action": "add artifact",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "add_artifact_with_risk_scores",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "Phantom",
+                        "connectorConfigs": [
+                            "soar_internal"
+                        ],
+                        "connectorId": "deb82aa9-22cc-4675-9cf1-534b8d006eb7",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "add_artifact_with_risk_scores",
+                        "id": "7",
+                        "parameters": {
+                            "cef_dictionary": "format_add_enrichment_artifact:formatted_data",
+                            "label": "Scores",
+                            "name": "enrichment",
+                            "source_data_identifier": "container:source_data_identifier"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "User created artifact",
+                                "field": "name"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "event",
+                                "field": "label"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "source_data_identifier"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "action",
+                    "warnings": {},
+                    "x": -1.4210854715202004e-14,
+                    "y": 820
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format_add_enrichment_artifact",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 2,
+                        "functionName": "format_add_enrichment_artifact",
+                        "id": "8",
+                        "parameters": [
+                            "map_vt_score_with_rba_score:custom_function:rba_score",
+                            "map_vt_score_with_rba_score:custom_function:virus_total_score"
+                        ],
+                        "template": "{{\"rba_score\":\"{0}\",\"virus_total_score\":\"{1}\"}}",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "format",
+                    "warnings": {},
+                    "x": -1.4210854715202004e-14,
+                    "y": 656
+                },
+                "9": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "artifact:*.cef.fileHash",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "valid filehash",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "filter_1",
+                        "id": "9",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 60,
+                    "y": 148
+                }
+            },
+            "notes": ""
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.10",
+        "version": "6.0.1.123902"
+    },
+    "create_time": "2023-06-14T14:43:43.816418+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
