@@ -18,7 +18,7 @@ def on_start(container):
     return
 
 @phantom.playbook_block()
-def create_response_template(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def create_response_template(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("create_response_template() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -52,14 +52,14 @@ def create_response_template(action=None, success=None, container=None, results=
 
 
 @phantom.playbook_block()
-def workbook_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def workbook_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("workbook_prompt() called")
 
     ################################################################################
     # Enter workbook ID to copy into MC.
     ################################################################################
 
-    # set user and message variables for phantom.prompt call
+    # set approver and message variables for phantom.prompt call
 
     user = phantom.collect2(container=container, datapath=["playbook:launching_user.name"])[0][0]
     role = None
@@ -74,6 +74,7 @@ def workbook_prompt(action=None, success=None, container=None, results=None, han
             "prompt": "Workbook ID",
             "options": {
                 "type": "range",
+                "required": True,
                 "min": 1,
                 "max": 100,
             },
@@ -86,7 +87,7 @@ def workbook_prompt(action=None, success=None, container=None, results=None, han
 
 
 @phantom.playbook_block()
-def retrieve_workbook_details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def retrieve_workbook_details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("retrieve_workbook_details() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -102,7 +103,7 @@ def retrieve_workbook_details(action=None, success=None, container=None, results
     # GET request to retrieve the workbook name and description.
     ################################################################################
 
-    workbook_prompt_result_data = phantom.collect2(container=container, datapath=["workbook_prompt:action_result.summary.responses.0","workbook_prompt:action_result.parameter.context.artifact_id","workbook_prompt:action_result.parameter.context.artifact_external_id"], action_results=results)
+    workbook_prompt_result_data = phantom.collect2(container=container, datapath=["workbook_prompt:action_result.summary.responses.0","workbook_prompt:action_result.parameter.context.artifact_id"], action_results=results)
 
     parameters = []
 
@@ -111,7 +112,7 @@ def retrieve_workbook_details(action=None, success=None, container=None, results
         if location_formatted_string is not None:
             parameters.append({
                 "location": location_formatted_string,
-                "context": {'artifact_id': workbook_prompt_result_item[1], 'artifact_external_id': workbook_prompt_result_item[2]},
+                "context": {'artifact_id': workbook_prompt_result_item[1]},
             })
 
     ################################################################################
@@ -124,13 +125,13 @@ def retrieve_workbook_details(action=None, success=None, container=None, results
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get data", parameters=parameters, name="retrieve_workbook_details", assets=["local soar"], callback=decision_1)
+    phantom.act("get data", parameters=parameters, name="retrieve_workbook_details", assets=["soar_local"], callback=decision_1)
 
     return
 
 
 @phantom.playbook_block()
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("decision_1() called")
 
     ################################################################################
@@ -142,7 +143,8 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
         container=container,
         conditions=[
             ["retrieve_workbook_details:action_result.status", "==", "success"]
-        ])
+        ],
+        delimiter=",")
 
     # call connected blocks if condition 1 matched
     if found_match_1:
@@ -156,7 +158,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
 
 @phantom.playbook_block()
-def retrieve_workbook_phases(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def retrieve_workbook_phases(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("retrieve_workbook_phases() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -172,7 +174,7 @@ def retrieve_workbook_phases(action=None, success=None, container=None, results=
     # GET request to retrieve the workbook phases.
     ################################################################################
 
-    workbook_prompt_result_data = phantom.collect2(container=container, datapath=["workbook_prompt:action_result.summary.responses.0","workbook_prompt:action_result.parameter.context.artifact_id","workbook_prompt:action_result.parameter.context.artifact_external_id"], action_results=results)
+    workbook_prompt_result_data = phantom.collect2(container=container, datapath=["workbook_prompt:action_result.summary.responses.0","workbook_prompt:action_result.parameter.context.artifact_id"], action_results=results)
 
     parameters = []
 
@@ -181,7 +183,7 @@ def retrieve_workbook_phases(action=None, success=None, container=None, results=
         if location_formatted_string is not None:
             parameters.append({
                 "location": location_formatted_string,
-                "context": {'artifact_id': workbook_prompt_result_item[1], 'artifact_external_id': workbook_prompt_result_item[2]},
+                "context": {'artifact_id': workbook_prompt_result_item[1]},
             })
 
     ################################################################################
@@ -194,13 +196,13 @@ def retrieve_workbook_phases(action=None, success=None, container=None, results=
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get data", parameters=parameters, name="retrieve_workbook_phases", assets=["local soar"], callback=decision_2)
+    phantom.act("get data", parameters=parameters, name="retrieve_workbook_phases", assets=["soar_local"], callback=decision_2)
 
     return
 
 
 @phantom.playbook_block()
-def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("decision_2() called")
 
     ################################################################################
@@ -212,7 +214,8 @@ def decision_2(action=None, success=None, container=None, results=None, handle=N
         container=container,
         conditions=[
             ["retrieve_workbook_phases:action_result.status", "==", "success"]
-        ])
+        ],
+        delimiter=",")
 
     # call connected blocks if condition 1 matched
     if found_match_1:
@@ -226,7 +229,7 @@ def decision_2(action=None, success=None, container=None, results=None, handle=N
 
 
 @phantom.playbook_block()
-def parse_workbook_phases(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def parse_workbook_phases(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("parse_workbook_phases() called")
 
     ################################################################################
@@ -304,7 +307,7 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
 
 
 @phantom.playbook_block()
-def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("decision_3() called")
 
     ################################################################################
@@ -316,7 +319,8 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
         container=container,
         conditions=[
             ["create_response_template:action_result.status", "==", "success"]
-        ])
+        ],
+        delimiter=",")
 
     # call connected blocks if condition 1 matched
     if found_match_1:
@@ -329,7 +333,7 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
 
 
 @phantom.playbook_block()
-def join_add_error_tag(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def join_add_error_tag(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("join_add_error_tag() called")
 
     # if the joined function has already been called, do nothing
@@ -346,7 +350,7 @@ def join_add_error_tag(action=None, success=None, container=None, results=None, 
 
 
 @phantom.playbook_block()
-def add_error_tag(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+def add_error_tag(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("add_error_tag() called")
 
     ################################################################################

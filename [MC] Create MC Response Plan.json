@@ -121,7 +121,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "d5e32c56b87f8ab8d0708df550c60bc383c4f196",
+            "hash": "b515ea88e8a79909987418f69ab4b180af0099f5",
             "nodes": {
                 "0": {
                     "data": {
@@ -136,8 +136,8 @@
                     "id": "0",
                     "type": "start",
                     "warnings": {},
-                    "x": 1000,
-                    "y": 79.99999999999977
+                    "x": 200,
+                    "y": 0
                 },
                 "1": {
                     "data": {
@@ -152,14 +152,16 @@
                     "id": "1",
                     "type": "end",
                     "warnings": {},
-                    "x": 1000,
-                    "y": 1660
+                    "x": 10,
+                    "y": 1618
                 },
                 "10": {
                     "data": {
                         "advanced": {
                             "customName": "Decision 2",
                             "customNameId": 0,
+                            "delimiter": ",",
+                            "delimiter_enabled": true,
                             "description": "Check to see if request is successful.",
                             "join": [],
                             "note": "Check to see if request is successful."
@@ -205,8 +207,8 @@
                     "id": "10",
                     "type": "decision",
                     "warnings": {},
-                    "x": 1060,
-                    "y": 920
+                    "x": 170,
+                    "y": 890
                 },
                 "13": {
                     "data": {
@@ -235,14 +237,16 @@
                     "type": "code",
                     "userCode": "\n    # Write your custom code here...\n    \n    # Create list to save each phase of a workbook\n    phases = []\n    \n    # Iterate each phase in the workbook\n    for phase in retrieve_workbook_phases_result_data[0][0][\"data\"]:\n                        \n        # Parse the workbook details\n        phase_name = phase[\"name\"]\n        phase_order = phase[\"order\"]\n        phase_tasks = phase[\"tasks\"]\n        \n        # Create list to save each task\n        tasks = []\n        \n        # Iterate each task in a phase\n        for task in phase_tasks:\n            \n            # Parse the task details\n            task_name = task[\"name\"]\n            task_order = task[\"order\"]\n            task_description = task[\"description\"]\n            task_is_note_required = task[\"is_note_required\"]\n            \n            # Remove double quotes and returns\n            task_description = task_description.replace('\"',\"'\")\n            task_description = task_description.replace('\\n', '')\n            task_description = task_description.replace('\\r', '')\n            \n            # Save to task list\n            tasks.append({\"name\":task_name,\"order\":task_order,\"description\":task_description,\"is_note_required\":task_is_note_required,\"owner\":\"\",\"suggestions\":{\"actions\":[],\"searches\":[]},\"start_time\":0,\"end_time\":0,\"total_time_taken\":0})\n        \n        # Save to phase list\n        phases.append({\"name\":phase_name,\"order\":phase_order,\"tasks\":tasks})\n    \n    # Create JSON body\n    parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"nklein\",\"update_by\":\"nklein\",\"name\":retrieve_workbook_details_result_item_0[0],\"description\":retrieve_workbook_details_result_item_1[0],\"template_status\":\"published\",\"phases\":phases}\n    \n    convert_json = json.dumps(parse_workbook_phases__json_body)\n    phantom.debug(convert_json)\n    \n    parse_workbook_phases__json_body = convert_json\n\n",
                     "warnings": {},
-                    "x": 980,
-                    "y": 1140
+                    "x": 0,
+                    "y": 1070
                 },
                 "14": {
                     "data": {
                         "advanced": {
                             "customName": "Decision 3",
                             "customNameId": 0,
+                            "delimiter": ",",
+                            "delimiter_enabled": true,
                             "description": "Check to see if request is successful.",
                             "join": [],
                             "note": "Check to see if request is successful."
@@ -288,8 +292,8 @@
                     "id": "14",
                     "type": "decision",
                     "warnings": {},
-                    "x": 1060,
-                    "y": 1460
+                    "x": 80,
+                    "y": 1438
                 },
                 "15": {
                     "data": {
@@ -307,6 +311,15 @@
                         "functionId": 1,
                         "functionName": "add_error_tag",
                         "id": "15",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
                         "selectMore": false,
                         "tab": "apis",
                         "type": "utility",
@@ -354,8 +367,8 @@
                     "id": "15",
                     "type": "utility",
                     "warnings": {},
-                    "x": 1300,
-                    "y": 1600
+                    "x": 330,
+                    "y": 1618
                 },
                 "4": {
                     "data": {
@@ -377,6 +390,15 @@
                         "functionId": 1,
                         "functionName": "create_response_template",
                         "id": "4",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
                         "parameters": {
                             "body": "parse_workbook_phases:custom_function:json_body",
                             "location": "servicesNS/-/missioncontrol/v1/responsetemplates"
@@ -393,8 +415,8 @@
                     "id": "4",
                     "type": "action",
                     "warnings": {},
-                    "x": 980,
-                    "y": 1300
+                    "x": 1.4210854715202004e-14,
+                    "y": 1240
                 },
                 "6": {
                     "data": {
@@ -411,12 +433,14 @@
                         },
                         "functionId": 1,
                         "functionName": "workbook_prompt",
+                        "hasExternalApprover": false,
                         "id": "6",
                         "message": "Enter the ID of the workbook you want to copy to Mission Control.",
                         "parameters": [],
                         "responseTime": 30,
                         "responses": [
                             {
+                                "required": true,
                                 "responseOptions": [
                                     1,
                                     100
@@ -425,14 +449,16 @@
                                 "responseType": "range"
                             }
                         ],
+                        "samlEnabled": false,
+                        "samlGroupsAllowed": [],
                         "type": "prompt"
                     },
                     "errors": {},
                     "id": "6",
                     "type": "prompt",
                     "warnings": {},
-                    "x": 1060,
-                    "y": 240
+                    "x": 180,
+                    "y": 150
                 },
                 "7": {
                     "data": {
@@ -447,13 +473,22 @@
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
-                            "local soar"
+                            "soar_local"
                         ],
                         "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
                         "connectorVersion": "v1",
                         "functionId": 2,
                         "functionName": "retrieve_workbook_details",
                         "id": "7",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
                         "parameters": {
                             "location": {
                                 "functionId": 2,
@@ -475,14 +510,16 @@
                     "id": "7",
                     "type": "action",
                     "warnings": {},
-                    "x": 980,
-                    "y": 399.99999999999966
+                    "x": 180,
+                    "y": 340
                 },
                 "8": {
                     "data": {
                         "advanced": {
                             "customName": "Decision 1",
                             "customNameId": 0,
+                            "delimiter": ",",
+                            "delimiter_enabled": true,
                             "description": "Check to see if request is successful.",
                             "join": [],
                             "note": "Check to see if request is successful."
@@ -528,8 +565,8 @@
                     "id": "8",
                     "type": "decision",
                     "warnings": {},
-                    "x": 1060,
-                    "y": 560
+                    "x": 260,
+                    "y": 534
                 },
                 "9": {
                     "data": {
@@ -544,13 +581,22 @@
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
-                            "local soar"
+                            "soar_local"
                         ],
                         "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
                         "connectorVersion": "v1",
                         "functionId": 1,
                         "functionName": "retrieve_workbook_phases",
                         "id": "9",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
                         "parameters": {
                             "location": {
                                 "functionId": 1,
@@ -572,20 +618,21 @@
                     "id": "9",
                     "type": "action",
                     "warnings": {},
-                    "x": 980,
-                    "y": 760
+                    "x": 90,
+                    "y": 714
                 }
             },
             "notes": "Prerequisites:\n-Provision an HTTP asset to create POST requests to Mission Control.\n-Provision an HTTP asset to perform GET request to SOAR."
         },
         "input_spec": null,
         "output_spec": null,
+        "playbook_trigger": "artifact_created",
         "playbook_type": "automation",
         "python_version": "3",
-        "schema": "5.0.9",
-        "version": "6.0.0.114895"
+        "schema": "5.0.15",
+        "version": "6.3.1.176"
     },
-    "create_time": "2023-05-23T02:28:17.161507+00:00",
+    "create_time": "2025-01-08T14:39:04.945277+00:00",
     "draft_mode": false,
     "labels": [
         "*"
