@@ -288,7 +288,7 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
         phases.append({"name":phase_name,"order":phase_order,"tasks":tasks})
     
     # Create JSON body
-    parse_workbook_phases__json_body = {"version":1,"is_default":False,"creator":"nklein","update_by":"nklein","name":retrieve_workbook_details_result_item_0[0],"description":retrieve_workbook_details_result_item_1[0],"template_status":"published","phases":phases}
+    parse_workbook_phases__json_body = {"version":1,"is_default":False,"creator":"hatalla","update_by":"hatalla","name":retrieve_workbook_details_result_item_0[0],"description":retrieve_workbook_details_result_item_1[0],"template_status":"published","phases":phases}
     
     convert_json = json.dumps(parse_workbook_phases__json_body)
     phantom.debug(convert_json)
