@@ -46,7 +46,7 @@ def create_response_template(action=None, success=None, container=None, results=
     ## Custom Code End
     ################################################################################
 
-    phantom.act("post data", parameters=parameters, name="create_response_template", assets=["local mission control 2"], callback=decision_3)
+    phantom.act("post data", parameters=parameters, name="create_response_template", assets=["agile-albatross-b6u.stg.splunkcloud.com"], callback=decision_3)
 
     return
 

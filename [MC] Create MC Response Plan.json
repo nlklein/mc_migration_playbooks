@@ -121,7 +121,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "b515ea88e8a79909987418f69ab4b180af0099f5",
+            "hash": "c5cb7ce1ac1977a1286519cba9b5071228ddbb75",
             "nodes": {
                 "0": {
                     "data": {
@@ -137,7 +137,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 200,
-                    "y": 0
+                    "y": -3.907985046680551e-14
                 },
                 "1": {
                     "data": {
@@ -237,7 +237,7 @@
                     "type": "code",
                     "userCode": "\n    # Write your custom code here...\n    \n    # Create list to save each phase of a workbook\n    phases = []\n    \n    # Iterate each phase in the workbook\n    for phase in retrieve_workbook_phases_result_data[0][0][\"data\"]:\n                        \n        # Parse the workbook details\n        phase_name = phase[\"name\"]\n        phase_order = phase[\"order\"]\n        phase_tasks = phase[\"tasks\"]\n        \n        # Create list to save each task\n        tasks = []\n        \n        # Iterate each task in a phase\n        for task in phase_tasks:\n            \n            # Parse the task details\n            task_name = task[\"name\"]\n            task_order = task[\"order\"]\n            task_description = task[\"description\"]\n            task_is_note_required = task[\"is_note_required\"]\n            \n            # Remove double quotes and returns\n            task_description = task_description.replace('\"',\"'\")\n            task_description = task_description.replace('\\n', '')\n            task_description = task_description.replace('\\r', '')\n            \n            # Save to task list\n            tasks.append({\"name\":task_name,\"order\":task_order,\"description\":task_description,\"is_note_required\":task_is_note_required,\"owner\":\"\",\"suggestions\":{\"actions\":[],\"searches\":[]},\"start_time\":0,\"end_time\":0,\"total_time_taken\":0})\n        \n        # Save to phase list\n        phases.append({\"name\":phase_name,\"order\":phase_order,\"tasks\":tasks})\n    \n    # Create JSON body\n    parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"nklein\",\"update_by\":\"nklein\",\"name\":retrieve_workbook_details_result_item_0[0],\"description\":retrieve_workbook_details_result_item_1[0],\"template_status\":\"published\",\"phases\":phases}\n    \n    convert_json = json.dumps(parse_workbook_phases__json_body)\n    phantom.debug(convert_json)\n    \n    parse_workbook_phases__json_body = convert_json\n\n",
                     "warnings": {},
-                    "x": 0,
+                    "x": 1.4210854715202004e-14,
                     "y": 1070
                 },
                 "14": {
@@ -383,7 +383,7 @@
                         },
                         "connector": "HTTP",
                         "connectorConfigs": [
-                            "local mission control 2"
+                            "agile-albatross-b6u.stg.splunkcloud.com"
                         ],
                         "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
                         "connectorVersion": "v1",
@@ -632,7 +632,7 @@
         "schema": "5.0.15",
         "version": "6.3.1.176"
     },
-    "create_time": "2025-01-08T14:39:04.945277+00:00",
+    "create_time": "2025-01-08T16:26:01.418230+00:00",
     "draft_mode": false,
     "labels": [
         "*"
