@@ -279,7 +279,9 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
             if not task_description:
                 task_description = "N/A"                        
             elif task_description == "":
-                task_description = "N/A"                        
+                task_description = "N/A"
+            elif task_description == "null":
+                task_description = "N/A"
             # Remove double quotes and returns
             #task_description = task_description.replace('"',"'")
             
