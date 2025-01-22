@@ -283,8 +283,7 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
             elif task_description == "null":
                 task_description = "N/A"
             # Remove double quotes and returns
-            #task_description = task_description.replace('"',"'")
-            
+            #task_description = task_description.replace('"',"'")            
             task_description = task_description.replace('"', '')
             task_description = task_description.replace('\'', '')
             task_description = task_description.replace('\n', '')
@@ -300,11 +299,11 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
     workbook_description = retrieve_workbook_details_result_item_1[0]    
     
     if not workbook_description:
-        workbook_description = "N/A"                        
+        workbook_description = workbook_name
     elif workbook_description == "":
-        workbook_description = "N/A"
+        workbook_description = workbook_name
     elif workbook_description == "null":
-        workbook_description = "N/A"
+        workbook_description = workbook_name
     
     workbook_description = workbook_description.replace('"', '')
     workbook_description = workbook_description.replace('\'', '')
