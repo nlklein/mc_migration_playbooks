@@ -121,7 +121,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "6363c8824188ab807546887d58f6e234a0855f11",
+            "hash": "17e76ba9993fda91139b66e124778b166d1139f8",
             "nodes": {
                 "0": {
                     "data": {
@@ -136,8 +136,8 @@
                     "id": "0",
                     "type": "start",
                     "warnings": {},
-                    "x": 200,
-                    "y": -1.5631940186722204e-13
+                    "x": 170,
+                    "y": 0
                 },
                 "1": {
                     "data": {
@@ -152,8 +152,8 @@
                     "id": "1",
                     "type": "end",
                     "warnings": {},
-                    "x": 10,
-                    "y": 1618
+                    "x": 360,
+                    "y": 1602
                 },
                 "10": {
                     "data": {
@@ -207,7 +207,7 @@
                     "id": "10",
                     "type": "decision",
                     "warnings": {},
-                    "x": 170,
+                    "x": 320,
                     "y": 890
                 },
                 "13": {
@@ -235,10 +235,10 @@
                     "errors": {},
                     "id": "13",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    \n    # Create list to save each phase of a workbook\n    phases = []\n    \n    # Iterate each phase in the workbook\n    for phase in retrieve_workbook_phases_result_data[0][0][\"data\"]:\n                        \n        # Parse the workbook details\n        phase_name = phase[\"name\"]\n        phase_order = phase[\"order\"]\n        phase_tasks = phase[\"tasks\"]\n        \n        # Create list to save each task\n        tasks = []\n        \n        # Iterate each task in a phase\n        for task in phase_tasks:\n            \n            # Parse the task details\n            task_name = task[\"name\"]\n            task_order = task[\"order\"]\n            task_description = task[\"description\"]\n            task_is_note_required = task[\"is_note_required\"]\n            \n            if not task_description:\n                task_description = \"N/A\"                        \n            elif task_description == \"\":\n                task_description = \"N/A\"\n            elif task_description == \"null\":\n                task_description = \"N/A\"\n            # Remove double quotes and returns\n            #task_description = task_description.replace('\"',\"'\")\n            \n            task_description = task_description.replace('\"', '')\n            task_description = task_description.replace('\\'', '')\n            task_description = task_description.replace('\\n', '')\n            task_description = task_description.replace('\\r', '')\n            \n            # Save to task list\n            tasks.append({\"name\":task_name,\"order\":task_order,\"description\":task_description,\"is_note_required\":task_is_note_required,\"owner\":\"\",\"suggestions\":{\"actions\":[],\"searches\":[]},\"start_time\":0,\"end_time\":0,\"total_time_taken\":0})\n        \n        # Save to phase list\n        phases.append({\"name\":phase_name,\"order\":phase_order,\"tasks\":tasks})\n    \n    # Create JSON body    \n    workbook_name = retrieve_workbook_details_result_item_0[0]\n    workbook_description = retrieve_workbook_details_result_item_1[0]    \n    workbook_description = \"Test\"    \n    #parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"hatalla\",\"update_by\":\"hatalla\",\"name\":retrieve_workbook_details_result_item_0[0],\"description\":retrieve_workbook_details_result_item_1[0],\"template_status\":\"published\",\"phases\":phases}\n    parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"hatalla\",\"update_by\":\"hatalla\",\"name\":workbook_name,\"description\":workbook_description,\"template_status\":\"published\",\"phases\":phases}\n    \n    convert_json = json.dumps(parse_workbook_phases__json_body)\n    phantom.debug(convert_json)\n    \n    parse_workbook_phases__json_body = convert_json\n\n",
+                    "userCode": "\n    # Write your custom code here...\n    \n    # Create list to save each phase of a workbook\n    phases = []\n    \n    # Iterate each phase in the workbook\n    for phase in retrieve_workbook_phases_result_data[0][0][\"data\"]:\n                        \n        # Parse the workbook details\n        phase_name = phase[\"name\"]\n        phase_order = phase[\"order\"]\n        phase_tasks = phase[\"tasks\"]\n        \n        # Create list to save each task\n        tasks = []\n        \n        # Iterate each task in a phase\n        for task in phase_tasks:\n            \n            # Parse the task details\n            task_name = task[\"name\"]\n            task_order = task[\"order\"]\n            task_description = task[\"description\"]\n            task_is_note_required = task[\"is_note_required\"]\n            \n            if not task_description:\n                task_description = \"N/A\"                        \n            elif task_description == \"\":\n                task_description = \"N/A\"\n            elif task_description == \"null\":\n                task_description = \"N/A\"\n            # Remove double quotes and returns\n            #task_description = task_description.replace('\"',\"'\")\n            \n            task_description = task_description.replace('\"', '')\n            task_description = task_description.replace('\\'', '')\n            task_description = task_description.replace('\\n', '')\n            task_description = task_description.replace('\\r', '')\n            \n            # Save to task list\n            tasks.append({\"name\":task_name,\"order\":task_order,\"description\":task_description,\"is_note_required\":task_is_note_required,\"owner\":\"\",\"suggestions\":{\"actions\":[],\"searches\":[]},\"start_time\":0,\"end_time\":0,\"total_time_taken\":0})\n        \n        # Save to phase list\n        phases.append({\"name\":phase_name,\"order\":phase_order,\"tasks\":tasks})\n        \n    workbook_name = retrieve_workbook_details_result_item_0[0]\n    workbook_description = retrieve_workbook_details_result_item_1[0]    \n    \n    if not workbook_description:\n        workbook_description = \"N/A\"                        \n    elif workbook_description == \"\":\n        workbook_description = \"N/A\"\n    elif workbook_description == \"null\":\n        workbook_description = \"N/A\"\n    \n    workbook_description = workbook_description.replace('\"', '')\n    workbook_description = workbook_description.replace('\\'', '')\n    workbook_description = workbook_description.replace('\\n', '')\n    workbook_description = workbook_description.replace('\\r', '')\n    \n    # Create JSON body    \n    #parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"hatalla\",\"update_by\":\"hatalla\",\"name\":retrieve_workbook_details_result_item_0[0],\"description\":retrieve_workbook_details_result_item_1[0],\"template_status\":\"published\",\"phases\":phases}\n    parse_workbook_phases__json_body = {\"version\":1,\"is_default\":False,\"creator\":\"hatalla\",\"update_by\":\"hatalla\",\"name\":workbook_name,\"description\":workbook_description,\"template_status\":\"published\",\"phases\":phases}\n    \n    convert_json = json.dumps(parse_workbook_phases__json_body)\n    phantom.debug(convert_json)\n    \n    parse_workbook_phases__json_body = convert_json\n\n",
                     "warnings": {},
-                    "x": 0,
-                    "y": 1080
+                    "x": 330,
+                    "y": 1070
                 },
                 "14": {
                     "data": {
@@ -292,8 +292,8 @@
                     "id": "14",
                     "type": "decision",
                     "warnings": {},
-                    "x": 80,
-                    "y": 1440
+                    "x": 410,
+                    "y": 1422
                 },
                 "15": {
                     "data": {
@@ -367,8 +367,8 @@
                     "id": "15",
                     "type": "utility",
                     "warnings": {},
-                    "x": 330,
-                    "y": 1618
+                    "x": 0,
+                    "y": 1602
                 },
                 "4": {
                     "data": {
@@ -415,8 +415,8 @@
                     "id": "4",
                     "type": "action",
                     "warnings": {},
-                    "x": 0,
-                    "y": 1240
+                    "x": 330,
+                    "y": 1246
                 },
                 "6": {
                     "data": {
@@ -457,7 +457,7 @@
                     "id": "6",
                     "type": "prompt",
                     "warnings": {},
-                    "x": 180,
+                    "x": 150,
                     "y": 150
                 },
                 "7": {
@@ -510,8 +510,8 @@
                     "id": "7",
                     "type": "action",
                     "warnings": {},
-                    "x": 180,
-                    "y": 340
+                    "x": 150,
+                    "y": 342
                 },
                 "8": {
                     "data": {
@@ -565,7 +565,7 @@
                     "id": "8",
                     "type": "decision",
                     "warnings": {},
-                    "x": 260,
+                    "x": 230,
                     "y": 534
                 },
                 "9": {
@@ -618,8 +618,8 @@
                     "id": "9",
                     "type": "action",
                     "warnings": {},
-                    "x": 100,
-                    "y": 720
+                    "x": 240,
+                    "y": 714
                 }
             },
             "notes": "Prerequisites:\n-Provision an HTTP asset to create POST requests to Mission Control.\n-Provision an HTTP asset to perform GET request to SOAR."
@@ -632,7 +632,7 @@
         "schema": "5.0.15",
         "version": "6.3.1.176"
     },
-    "create_time": "2025-01-22T19:49:19.581007+00:00",
+    "create_time": "2025-01-22T19:56:33.114545+00:00",
     "draft_mode": false,
     "labels": [
         "*"

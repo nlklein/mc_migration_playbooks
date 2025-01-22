@@ -295,11 +295,23 @@ def parse_workbook_phases(action=None, success=None, container=None, results=Non
         
         # Save to phase list
         phases.append({"name":phase_name,"order":phase_order,"tasks":tasks})
-    
-    # Create JSON body    
+        
     workbook_name = retrieve_workbook_details_result_item_0[0]
     workbook_description = retrieve_workbook_details_result_item_1[0]    
-    workbook_description = "Test"    
+    
+    if not workbook_description:
+        workbook_description = "N/A"                        
+    elif workbook_description == "":
+        workbook_description = "N/A"
+    elif workbook_description == "null":
+        workbook_description = "N/A"
+    
+    workbook_description = workbook_description.replace('"', '')
+    workbook_description = workbook_description.replace('\'', '')
+    workbook_description = workbook_description.replace('\n', '')
+    workbook_description = workbook_description.replace('\r', '')
+    
+    # Create JSON body    
     #parse_workbook_phases__json_body = {"version":1,"is_default":False,"creator":"hatalla","update_by":"hatalla","name":retrieve_workbook_details_result_item_0[0],"description":retrieve_workbook_details_result_item_1[0],"template_status":"published","phases":phases}
     parse_workbook_phases__json_body = {"version":1,"is_default":False,"creator":"hatalla","update_by":"hatalla","name":workbook_name,"description":workbook_description,"template_status":"published","phases":phases}
     
